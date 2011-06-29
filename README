@@ -1,0 +1,103 @@
+RNAFeatures 1.0
+==================================
+
+Content
+=======
+
+0. Terms of use
+1. Introduction
+2. Theory
+3. Usage
+   3.1. Installation
+   3.2. Invocation
+   3.3. Output
+4. Citing RNAFeatures
+5. Contact
+
+0. Terms of use
+===============
+
+Please read the file COPYING for licence terms.
+
+1. Introduction
+===============
+
+RNAFeatures computes two measures of RNA features:
+- co-transcriptional effect measures: Cis and Trans.
+- gene selection measures: class of bases and rate of substitution for each class.
+
+2. Theory
+=========
+
+The establishment of this theory is not my work.
+If you are interested in the theory, please read following papers:
+
+"Co-transcriptional folding is encoded within RNA genes" 
+(http://www.biomedcentral.com/1471-2199/5/10/)
+written by Irmtraud M Meyer and Istvan Miklos.
+
+"An Analysis of Structural Influences on Selection in RNA Genes"
+(http://mbe.oxfordjournals.org/content/26/1/209.full.pdf)
+written by Naila K. Mimouni, Rune B. Lyngso, Sam Griffiths-Jones and Jotun Hein.
+
+3. Usage
+========
+
+3.1. Installation
+=================
+
+Please read INSTALL for details.
+
+3.2. Invocation
+===============
+
+RNAFeatures [options] [filename]
+
+RNAFeatures takes a file name, which containing a RNA sequence, as an input.
+
+Available command line options can be checked by following command:
+
+RNAFeatures -h
+
+You can test coTransFold on one of the example RNA sequences in a directory 
+called "examples":
+
+（For plain CIS and TRANS) 
+RNAFeatures example/tRNA_seq
+
+(For free energy CIS and TRANS)
+RNAFeatures -g example/tRNA_seq
+
+3.3. Output
+===========
+
+RNAFeatures outputs following:
+- length of sequence
+- base pairs and closing loop
+- sequence
+- parenthesis structure
+- MFE
+- Cis and Trans
+- classes of each bases
+
+4. Citing RNAFeatures
+=====================
+
+If you use RNAFeatures in your work, please cite:
+
+Irmtraud M Meyer and Istvan Miklos
+Co-transcriptional folding is encoded withing RNA genes.
+BMC Molecular Biology. 2004. 5:10
+
+Naila K. Mimouni, Rune B. Lyngso, Sam Griffiths-Jones and Jotun Hein
+An Analysis of Structural Influences on Selection in RNA Genes
+Mol. Bio. Evo. 2009. 26:209-216
+
+5. Contact
+==========
+
+Please feel free to contact the author for bug-reports, feature-requests, 
+suggestions and etc. Of course I also look forward to hearing from you if 
+you discovered something biologically interesting things using coTransFold.
+
+Katsuya Noguchi <katsuya.noguchi@gmail.com>

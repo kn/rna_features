@@ -1,0 +1,37 @@
+Disclaimer and Copyright
+========================
+
+rna_features is free software.
+It is distributed in the hope that it will be useful
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+Permission is granted for research, educational, and commercial use
+and modification so long as 1) the program and any derived works are not
+redistributed for any fee, other than media costs, 2) proper credit is
+given to the authors and the Institute for Computer Science Department of the 
+University of Oxford.
+
+If you want to include this software in a commercial product, please contact 
+the authors. 
+
+rna_features depends on library files of the Vienna RNA
+Package version 1.5. Please note the license terms below.
+
+
+Vienna RNA
+==========
+
+The programs, library and source code of the Vienna RNA Package are free
+software. They are distributed in the hope that they will be useful
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+
+Permission is granted for research, educational, and commercial use
+and modification so long as 1) the package and any derived works are not
+redistributed for any fee, other than media costs, 2) proper credit is
+given to the authors and the Institute for Theoretical Chemistry of the 
+University of Vienna.
+
+If you want to include this software in a commercial product, please contact 
+the authors.

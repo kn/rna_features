@@ -1,0 +1,4 @@
+purpose "RNAFeatures computes several features of given RNA: Parenthesis structure, MFE, Cis, Trans and class of its bases."
+
+option	"weight-energy"	g	"More stable alternative helices are given more weights \
+by taking stacking energies into account (For Cis and Trans)"	flag	off
