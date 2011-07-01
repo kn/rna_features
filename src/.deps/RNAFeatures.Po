@@ -16,7 +16,8 @@ RNAFeatures.o RNAFeatures.o: RNAFeatures.c /usr/include/stdio.h \
   /usr/include/i386/_types.h /usr/include/string.h \
   /usr/include/secure/_string.h cmdline.h ../config.h \
   ../lib_rna_features/cotransfold.h ../lib_rna_features/lrfutils.h \
-  ../librna/fold.h ../librna/fold_vars.h ../lib_rna_features/selection.h
+  ../lib_phylip/dnapars.h ../librna/fold.h ../librna/fold_vars.h \
+  ../lib_rna_features/selection.h
 
 /usr/include/stdio.h:
 
@@ -89,6 +90,8 @@ cmdline.h:
 ../lib_rna_features/cotransfold.h:
 
 ../lib_rna_features/lrfutils.h:
+
+../lib_phylip/dnapars.h:
 
 ../librna/fold.h:
 

@@ -131,33 +131,21 @@ int main (int argc, char *argv[]) {
 	/* Test Parsimony */
 	char** sequences = (char**)malloc(sizeof(char*) * 5);
 	int lclasses[13] = {1, 1, -1, 2, 2, -1, 3, 3, -1, 1, 2, 3, 0};
-	int *len1 = (int*)malloc(sizeof(int));
-	int *len2 = (int*)malloc(sizeof(int));
-	int *len3 = (int*)malloc(sizeof(int));
-	char** seqC1 = (char**)malloc(sizeof(char*) * 5);
-	char** seqC2 = (char**)malloc(sizeof(char*) * 5);
-	char** seqC3 = (char**)malloc(sizeof(char*) * 5);
+	double *avg1 = (double*)malloc(sizeof(double));
+	double *avg2 = (double*)malloc(sizeof(double));
+	double *avg3 = (double*)malloc(sizeof(double));
 	
-	for (i = 0; i < 5; i++) {
+	for (i = 0; i < 5; i++)
 		sequences[i] = (char*)malloc(sizeof(char) * 13);
-		seqC1[i] = (char*)malloc(sizeof(char) * 13);
-		seqC2[i] = (char*)malloc(sizeof(char) * 13);
-		seqC3[i] = (char*)malloc(sizeof(char) * 13);
-	}
 	strcpy(sequences[0], "AACGUGGCCAAAU");
 	strcpy(sequences[1], "AAGGUCGCCAAAC");
 	strcpy(sequences[2], "CAUUUCGUCACAA");
 	strcpy(sequences[3], "GGUAUUUCGGCCU");
 	strcpy(sequences[4], "GGGAUCUCGGCCC");
 	
-	separate_sequences_by_class(5, 13, lclasses, sequences,
-								len1, seqC1, len2,
-								seqC2, len3, seqC3);
-	double score1 = get_min_parsimony_score(5, *len1, seqC1);
-	double score2 = get_min_parsimony_score(5, *len2, seqC2);
-	double score3 = get_min_parsimony_score(5, *len3, seqC3);
-	printf("\nParsimony score:\nC1: %f\n%s\nC2: %f\n%s\nC3: %f\n%s\n",
-	score1, seqC1[0], score2, seqC2[0], score3, seqC3[0]);
+	get_avg_sub_rate_for_classes(5, 13, sequences, lclasses,
+								avg1, avg2, avg3);
+	printf("\nParsimony score:\nC1: %f\nC2: %f\nC3: %f\n", *avg1, *avg2, *avg3);
 }
 
 PRIVATE void formatSequence(char *seq) {
