@@ -28,13 +28,12 @@
 #define GU 5
 #define UG 6
 
-PUBLIC void cotransfold(char *seq, char *structure, double *cis, double *trans, int is_plain);
+PUBLIC void cotransfold(char *seq, int numBps, bp_info *bps, double *cis, double *trans, int is_plain);
 
 PRIVATE double calculate_threeCis_or_threeTrans(int i, int c, int len, double energy, int is_plain);
 PRIVATE double calculate_fiveCis_or_fiveTrans(int i, int c, double energy, int is_plain);
 PRIVATE int get_stem_len(double *energy, const char *seq, int len, int b1, int b2, int is_forward);
-PRIVATE void init_pairs(int *pairs, const char *structure);
-PRIVATE int has_at_least_two_adjacent_bp(const char *structure, int len, int si);
+PRIVATE int has_at_least_two_adjacent_bp(int numBps, bp_info *bps, int p);
 PRIVATE int is_alt_helix(double *energy, const char *seq, int len, int b1, int b2);
 PRIVATE int which_base_pair(char b1, char b2);
 PRIVATE double get_stacking_energy(char pre_b1, char pre_b2, char b1, char b2);
@@ -46,39 +45,33 @@ PRIVATE double get_ua_stacking_energy(char b1, char b2);
 PRIVATE double get_ug_stacking_energy(char b1, char b2);
 
 
-void cotransfold(char *seq, char *structure, double *cis, double *trans, int is_plain) {
+void cotransfold(char *seq, int numBps, bp_info *bps, double *cis, double *trans, int is_plain) {
 	int len = (int) strlen(seq);
-	int i, j;
+	int p, c;
 	double threeCis = 0, threeTrans = 0, fiveCis = 0, fiveTrans = 0;
 	int *pairs = (int *)malloc(sizeof(int) * len);
 	double *energy = (double *)malloc(sizeof(double));
 
-	if (len != (int) strlen(structure))
-		fprintf(stderr, "Input error -> the length of the sequence and the parenthes structure has to be the same.\n");
-
-	init_pairs(pairs, structure);
-
-	for (i = 0; i < len; i++) {
-		if (structure[i] == '(' && has_at_least_two_adjacent_bp(structure, len, i) == TRUE) {
-			for (j = 0; j < i - 3; j++) {
-				if (is_alt_helix(energy, seq, len, j, i) == TRUE) {
-					fiveCis += calculate_fiveCis_or_fiveTrans(i, j, *energy, is_plain);
+	for (p = 0; p < numBps; p++) {
+		if (has_at_least_two_adjacent_bp(numBps, bps, p) == TRUE) {
+			for (c = 0; c < bps[p].bp.i - 3; c++) {
+				if (is_alt_helix(energy, seq, len, c, bps[p].bp.i) == TRUE) {
+					fiveCis += calculate_fiveCis_or_fiveTrans(bps[p].bp.i, c, *energy, is_plain);
 				}
 			}
-   			for (j = pairs[i] + 1; j < len; j++) {
-				if (is_alt_helix(energy, seq, len, i, j) == TRUE) {
-					threeTrans += calculate_threeCis_or_threeTrans(i, j, len, *energy, is_plain);
+   			for (c = bps[p].bp.j + 1; c < len; c++) {
+				if (is_alt_helix(energy, seq, len, bps[p].bp.i, c) == TRUE) {
+					threeTrans += calculate_threeCis_or_threeTrans(bps[p].bp.j, c, len, *energy, is_plain);
 				}
 			}
-		} else if (structure[i] == ')' && has_at_least_two_adjacent_bp(structure, len, i) == TRUE) {
-			for (j = 0; j < pairs[i]; j++) {
-				if (is_alt_helix(energy, seq, len, j, i) == TRUE) {
-					fiveTrans += calculate_fiveCis_or_fiveTrans(i, j, *energy, is_plain);
+			for (c = 0; c < bps[p].bp.i; c++) {
+				if (is_alt_helix(energy, seq, len, c, bps[p].bp.j) == TRUE) {
+					fiveTrans += calculate_fiveCis_or_fiveTrans(bps[p].bp.i, c, *energy, is_plain);
 				}
 			}
-			for (j = i + 4; j < len; j++) {
-				if (is_alt_helix(energy, seq, len, i, j) == TRUE) {
-					threeCis += calculate_threeCis_or_threeTrans(i, j, len, *energy, is_plain);
+			for (c = bps[p].bp.j + 4; c < len; c++) {
+				if (is_alt_helix(energy, seq, len, bps[p].bp.j, c) == TRUE) {
+					threeCis += calculate_threeCis_or_threeTrans(bps[p].bp.j, c, len, *energy, is_plain);
 				}
 			}
 		}
@@ -100,45 +93,20 @@ PRIVATE double calculate_fiveCis_or_fiveTrans(int i, int c, double energy, int i
 	return (is_plain ? 1 : abs(energy)) / (d * log(l));
 }
 
-PRIVATE void init_pairs(int *pairs, const char *structure) {
-	int i, j;
-	int len = (int) strlen(structure);
-	int *stack = (int *) malloc(sizeof(int) * len / 2 + 1);
-	j = 0;
-
-	for (i = 0; i < len; i++) {
-		switch (structure[i]) {
-		case '(':
-			stack[j++] = i;
-			break;
-		case ')':
-			pairs[stack[--j]] = i;
-			pairs[i] = stack[j];
-			break;
-		case '.':
-			pairs[i] = -1;
-			break;
-		default:
-			// Ignore other characters.
-			break;
-		}
-	}
-}
-
 /**
  * Returns true if given base pairs have at least two adjacent base pairs; o/w false.
  */
-PRIVATE int has_at_least_two_adjacent_bp(const char *structure, int len, int si) {
+PRIVATE int has_at_least_two_adjacent_bp(int numBps, bp_info *bps, int p) {
 	int count = 0;
-	int i = si - 1;
-	while (i >= 0 && count < 2 && structure[i] == structure[si]) {
+	int k = 1;
+	while (p - k >= 0 && count < 2 && bps[p - k].bp.i + k == bps[p].bp.i && bps[p - k].bp.j - k == bps[p].bp.j) {
 		count++;
-		i--;
+		k++;
 	}
-	i = si + 1;
-	while (i < len && count < 2 && structure[i] == structure[si]) {
+	k = 1;
+	while (p + k < numBps && count < 2 && bps[p + k].bp.i - k == bps[p].bp.i && bps[p + k].bp.j + k == bps[p].bp.j) {
 		count++;
-		i++;
+		k++;
 	}
 	if (count < 2)
 		return FALSE;

@@ -105,7 +105,7 @@ int main (int argc, char *argv[]) {
 	
 	find_base_pairs(structure, numBps, bps);
 	
-	cotransfold(seq, structure, cis, trans, is_plain);
+	cotransfold(seq, *numBps, bps, cis, trans, is_plain);
 	
 	classify(*numBps, bps, len, classes);
 
