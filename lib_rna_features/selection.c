@@ -23,6 +23,9 @@
 #define FALSE 0
 
 PUBLIC void classify(int numBps, bp_info* bps, int len, int* classes);
+PUBLIC void separate_sequences_by_class(int numSeq, int len, int* classes, char** seqs,
+										int *len1, char** seqC1, int *len2,
+										char** seqC2, int *len3, char** seqC3);
 PRIVATE int annotate_bp(tuple bp, tuple loop, int stemLen, int class);
 
 /**
@@ -56,13 +59,48 @@ PUBLIC void classify(int numBps, bp_info* bps, int len, int* classes) {
 		// Annotate middle base pair in stem of odd length
 		if (j % 2 == 1) {
 			classes[bps[i + j / 2].bp.i] = annotate_bp(bps[i + j / 2].bp, outLoop, j, j / 2);
-			if (classes[bps[i + j / 2].bp.i]  != 0)
+			if (classes[bps[i + j / 2].bp.i]  != -1)
 				classes[bps[i + j / 2].bp.i] = annotate_bp(bps[i + j / 2].bp, inLoop, j, j / 2);
 			classes[bps[i + j / 2].bp.j] = classes[bps[i + j / 2].bp.i];
 			
 		}
 		i += j;
 	}
+}
+
+/**
+ * Separates given set of sequences into sets of sequences by class (1, 2 and 3). 
+ */
+PUBLIC void separate_sequences_by_class(int numSeq, int len, int* classes, char** seqs,
+										int *len1, char** seqC1, int *len2,
+										char** seqC2, int *len3, char** seqC3) {
+	int c1, c2, c3, i, j;
+	int curIndex;
+	char** curSeq;
+	c1 = c2 = c3 = 0;
+	for (i = 0; i < len; i++) {
+		if (classes[i] == 1) {
+			curSeq = seqC1;
+			curIndex = c1;
+			c1++;
+		} else if (classes[i] == 2) {
+			curSeq = seqC2;
+			curIndex = c2;
+			c2++;
+		} else if (classes[i] == 3) {
+			curSeq = seqC3;
+			curIndex = c3;
+			c3++;
+		} else {
+			continue;
+		}
+		for (j = 0; j < numSeq; j++) {
+			curSeq[j][curIndex] = seqs[j][i];
+		}
+	}
+	(*len1) = c1;
+	(*len2) = c2;
+	(*len3) = c3;
 }
 
 /**

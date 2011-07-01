@@ -13,6 +13,7 @@
 #include "cmdline.h"
 #include "config.h"
 #include "cotransfold.h"
+#include "dnapars.h"
 #include "fold.h"
 #include "fold_vars.h"
 #include "selection.h"
@@ -53,17 +54,14 @@ int main (int argc, char *argv[]) {
 		usage();
 		exit(EXIT_FAILURE);
 	}
-
 	if (args.help_given){
 		help();
 		exit(EXIT_SUCCESS);
 	}
-
 	if (args.version_given){
 		version();
 		exit(EXIT_SUCCESS);
 	}
-
 	if (args.inputs_num < 1){
 		perror("This program requires following one arguments:\n-filename containing a sequence\ne.g. coTransFold tRNA_seq\n");
 		exit(1);
@@ -75,7 +73,7 @@ int main (int argc, char *argv[]) {
 	
 	// Global RNA package variables.
 	  do_backtrack = 1; 
-	  dangles=2;
+	  dangles = 2;
 
 	// Open input files.
 	seqFile = fopen(args.inputs[0], "r");
@@ -117,7 +115,7 @@ int main (int argc, char *argv[]) {
 		printf("(%d, %d) : (%d, %d)\n", bps[i].bp.i, bps[i].bp.j, bps[i].loop.i, bps[i].loop.j);
 	printf("Sequence:\n%s\nStructure:\n%s\nMFE: %f\n", seq, structure, mfe);
 	printf("CIS: %f\nTRANS: %f\n", *cis, *trans);		
-	printf("Classes:\n");
+	printf("Classes (1 = class I, 2 = class II, 3 = class III, 0 = no class, -1 = discarded):\n");
 	for (i = 0; i < len; i++)
 		printf("%d ", classes[i]);
 	printf("\n");
@@ -126,6 +124,40 @@ int main (int argc, char *argv[]) {
 	free(structure);
 	free(cis);
 	free(trans);
+	free(bps);
+	free(numBps);
+	free(classes);
+	
+	/* Test Parsimony */
+	char** sequences = (char**)malloc(sizeof(char*) * 5);
+	int lclasses[13] = {1, 1, -1, 2, 2, -1, 3, 3, -1, 1, 2, 3, 0};
+	int *len1 = (int*)malloc(sizeof(int));
+	int *len2 = (int*)malloc(sizeof(int));
+	int *len3 = (int*)malloc(sizeof(int));
+	char** seqC1 = (char**)malloc(sizeof(char*) * 5);
+	char** seqC2 = (char**)malloc(sizeof(char*) * 5);
+	char** seqC3 = (char**)malloc(sizeof(char*) * 5);
+	
+	for (i = 0; i < 5; i++) {
+		sequences[i] = (char*)malloc(sizeof(char) * 13);
+		seqC1[i] = (char*)malloc(sizeof(char) * 13);
+		seqC2[i] = (char*)malloc(sizeof(char) * 13);
+		seqC3[i] = (char*)malloc(sizeof(char) * 13);
+	}
+	strcpy(sequences[0], "AACGUGGCCAAAU");
+	strcpy(sequences[1], "AAGGUCGCCAAAC");
+	strcpy(sequences[2], "CAUUUCGUCACAA");
+	strcpy(sequences[3], "GGUAUUUCGGCCU");
+	strcpy(sequences[4], "GGGAUCUCGGCCC");
+	
+	separate_sequences_by_class(5, 13, lclasses, sequences,
+								len1, seqC1, len2,
+								seqC2, len3, seqC3);
+	double score1 = get_min_parsimony_score(5, *len1, seqC1);
+	double score2 = get_min_parsimony_score(5, *len2, seqC2);
+	double score3 = get_min_parsimony_score(5, *len3, seqC3);
+	printf("\nParsimony score:\nC1: %f\n%s\nC2: %f\n%s\nC3: %f\n%s\n",
+	score1, seqC1[0], score2, seqC2[0], score3, seqC3[0]);
 }
 
 PRIVATE void formatSequence(char *seq) {

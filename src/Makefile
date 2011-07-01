@@ -45,7 +45,8 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_RNAFeatures_OBJECTS = RNAFeatures.$(OBJEXT) cmdline.$(OBJEXT)
 RNAFeatures_OBJECTS = $(am_RNAFeatures_OBJECTS)
-RNAFeatures_DEPENDENCIES = ../lib_rna_features/libRNAFeatures.a
+RNAFeatures_DEPENDENCIES = ../lib_rna_features/libRNAFeatures.a \
+	../lib_phylip/libPHYLIP.a
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -86,7 +87,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-ISODATE = 2011-06-29
+ISODATE = 2011-06-30
 LDFLAGS = 
 LIBOBJS = 
 LIBS = 
@@ -149,8 +150,8 @@ target_alias =
 top_builddir = ..
 top_srcdir = ..
 RNAFeatures_SOURCES = RNAFeatures.c cmdline.c cmdline.h
-RNAFeatures_LDADD = ../lib_rna_features/libRNAFeatures.a -L../librna -lRNA -lm
-INCLUDES = -I../lib_rna_features -I../librna
+RNAFeatures_LDADD = ../lib_rna_features/libRNAFeatures.a -L../librna -lRNA -lm ../lib_phylip/libPHYLIP.a
+INCLUDES = -I../lib_rna_features -I../librna -I../lib_phylip
 all: all-am
 
 .SUFFIXES:

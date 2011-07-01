@@ -106,7 +106,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-ISODATE = 2011-06-29
+ISODATE = 2011-06-30
 LDFLAGS = 
 LIBOBJS = 
 LIBS = 
@@ -168,7 +168,7 @@ sysconfdir = ${prefix}/etc
 target_alias = 
 top_builddir = .
 top_srcdir = .
-SUBDIRS = lib_rna_features src
+SUBDIRS = librna lib_phylip lib_rna_features src
 dist_doc_DATA = README
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive

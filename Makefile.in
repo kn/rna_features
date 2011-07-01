@@ -168,7 +168,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = lib_rna_features src
+SUBDIRS = librna lib_phylip lib_rna_features src
 dist_doc_DATA = README
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive

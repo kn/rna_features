@@ -1,3 +1,5 @@
+#ifndef LRFUTILS_H
+#define LRFUTILS_H
 typedef struct {
 	int i;
 	int j;
@@ -10,3 +12,4 @@ typedef struct {
 
 extern void *allocate(unsigned int size, char* name);
 extern void find_base_pairs(const char* structure, int* numBps, bp_info* bps);
+#endif
