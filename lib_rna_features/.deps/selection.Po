@@ -15,7 +15,8 @@ selection.o selection.o: selection.c /usr/include/math.h \
   /usr/include/libkern/i386/_OSByteOrder.h /usr/include/alloca.h \
   /usr/include/machine/types.h /usr/include/i386/types.h \
   /usr/include/i386/_types.h /usr/include/string.h \
-  /usr/include/secure/_string.h ../config.h selection.h lrfutils.h
+  /usr/include/secure/_string.h ../config.h ../lib_phylip/dnapars.h \
+  selection.h lrfutils.h
 
 /usr/include/math.h:
 
@@ -88,6 +89,8 @@ selection.o selection.o: selection.c /usr/include/math.h \
 /usr/include/secure/_string.h:
 
 ../config.h:
+
+../lib_phylip/dnapars.h:
 
 selection.h:
 

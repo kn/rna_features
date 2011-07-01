@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "config.h"
+#include "dnapars.h"
 #include "selection.h"
 
 #define PUBLIC
@@ -22,8 +23,10 @@
 #define TRUE 1
 #define FALSE 0
 
-PUBLIC void classify(int numBps, bp_info* bps, int len, int* classes);
-PUBLIC void separate_sequences_by_class(int numSeq, int len, int* classes, char** seqs,
+PUBLIC void get_avg_sub_rate_for_classes(int numSeq, int len, char** seqs, int *classes,
+										double *avg1, double *avg2, double *avg3);
+PUBLIC void classify(int numBps, bp_info* bps, int len, int *classes);
+PRIVATE void separate_sequences_by_class(int numSeq, int len, int* classes, char** seqs,
 										int *len1, char** seqC1, int *len2,
 										char** seqC2, int *len3, char** seqC3);
 PRIVATE int annotate_bp(tuple bp, tuple loop, int stemLen, int class);
@@ -69,9 +72,36 @@ PUBLIC void classify(int numBps, bp_info* bps, int len, int* classes) {
 }
 
 /**
+ * Calculates the average substitution rate for each class (I, II and III).
+ */
+PUBLIC void get_avg_sub_rate_for_classes(int numSeq, int len, char** seqs, int *classes,
+										double *avg1, double *avg2, double *avg3) {
+	int i = 0;
+	int *len1 = (int*)malloc(sizeof(int));
+	int *len2 = (int*)malloc(sizeof(int));
+	int *len3 = (int*)malloc(sizeof(int));
+	char** seqC1 = (char**)malloc(sizeof(char*) * numSeq);
+	char** seqC2 = (char**)malloc(sizeof(char*) * numSeq);
+	char** seqC3 = (char**)malloc(sizeof(char*) * numSeq);
+	
+	for (i = 0; i < 5; i++) {
+		seqC1[i] = (char*)malloc(sizeof(char) * len);
+		seqC2[i] = (char*)malloc(sizeof(char) * len);
+		seqC3[i] = (char*)malloc(sizeof(char) * len);
+	}
+	
+	separate_sequences_by_class(numSeq, len, classes, seqs,
+								len1, seqC1, len2,
+								seqC2, len3, seqC3);
+	(*avg1) = get_min_parsimony_score(5, *len1, seqC1) / (double)(*len1);
+	(*avg2) = get_min_parsimony_score(5, *len2, seqC2) / (double)(*len2);
+	(*avg3) = get_min_parsimony_score(5, *len3, seqC3) / (double)(*len3);
+}
+
+/**
  * Separates given set of sequences into sets of sequences by class (1, 2 and 3). 
  */
-PUBLIC void separate_sequences_by_class(int numSeq, int len, int* classes, char** seqs,
+PRIVATE void separate_sequences_by_class(int numSeq, int len, int* classes, char** seqs,
 										int *len1, char** seqC1, int *len2,
 										char** seqC2, int *len3, char** seqC3) {
 	int c1, c2, c3, i, j;

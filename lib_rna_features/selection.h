@@ -1,6 +1,5 @@
 #include "lrfutils.h"
 
 extern void classify(int numBps, bp_info* bps, int len, int* classes);
-extern void separate_sequences_by_class(int numSeq, int len, int* classes, char** seqs,
-										int *len1, char** seqC1, int *len2, char** seqC2,
-										int *len3, char** seqC3);
+extern void get_avg_sub_rate_for_classes(int numSeq, int len, char** seqs, int *classes,
+										double *avg1, double *avg2, double *avg3);
