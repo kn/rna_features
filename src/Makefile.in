@@ -46,7 +46,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_RNAFeatures_OBJECTS = RNAFeatures.$(OBJEXT) cmdline.$(OBJEXT)
 RNAFeatures_OBJECTS = $(am_RNAFeatures_OBJECTS)
 RNAFeatures_DEPENDENCIES = ../lib_rna_features/libRNAFeatures.a \
-	../lib_phylip/libPHYLIP.a
+	../lib_phylip/libPHYLIP.a ../librna2/libRNA2.a
 DEFAULT_INCLUDES = -I. -I$(top_builddir)@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -150,7 +150,7 @@ target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 RNAFeatures_SOURCES = RNAFeatures.c cmdline.c cmdline.h
-RNAFeatures_LDADD = ../lib_rna_features/libRNAFeatures.a ../lib_phylip/libPHYLIP.a -L../librna2 -lRNA
+RNAFeatures_LDADD = ../lib_rna_features/libRNAFeatures.a ../lib_phylip/libPHYLIP.a ../librna2/libRNA2.a
 INCLUDES = -I../lib_rna_features -I../librna2 -I../lib_phylip
 all: all-am
 

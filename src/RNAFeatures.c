@@ -109,6 +109,8 @@ int main (int argc, char *argv[]) {
 	cotransfold(seq, *numBps, bps, cis, trans, is_plain);
 	
 	classify(*numBps, bps, len, classes);
+	
+	float q = boltzmann(seq, NULL);
 
 	// Prints out result to console
 	printf("Length: %d\nBase pairs and closing internal loop:\n", len);
@@ -125,7 +127,9 @@ int main (int argc, char *argv[]) {
 	free(trans);
 	free(bps);
 	free(numBps);
-	free(classes);
+	free(classes);	
+	free(seq);
+	free(structure);
 	
 	/* Test Parsimony */
 	char** sequences = (char**)malloc(sizeof(char*) * 5);
@@ -146,10 +150,7 @@ int main (int argc, char *argv[]) {
 								avg1, avg2, avg3);
 	printf("\nParsimony score:\nC1: %f\nC2: %f\nC3: %f\n", *avg1, *avg2, *avg3);
 	
-	printf("\nPartitiona function: %f\n", pf_fold(seq, structure));
-	
-	free(seq);
-	free(structure);
+	printf("\nQ: %f\n", q);
 }
 
 PRIVATE void formatSequence(char *seq) {

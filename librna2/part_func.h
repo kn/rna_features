@@ -58,7 +58,9 @@ extern  int st_back;
  *  \param structure  A pointer to a char array where a base pair probability information might be stored in a pseudo-dot-bracket notation (might be NULL, too)
  *  \returns          The Gibbs free energy of the ensemble (\f$G = -RT \cdot \log(Q) \f$) in kcal/mol
  */
-float   pf_fold(const char *sequence, char *structure);
+float   boltzmann(const char *sequence, char *structure);
+
+//float   pf_fold(const char *sequence, char *structure);
 
 /**
  *  \brief Compute the partition function of a circular RNA sequence

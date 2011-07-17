@@ -241,7 +241,7 @@ PUBLIC void free_pf_arrays(void){
 }
 
 /*-----------------------------------------------------------------*/
-PUBLIC float pf_fold(const char *sequence, char *structure){
+PUBLIC float boltzmann(const char *sequence, char *structure){
 
   FLT_OR_DBL  Q;
   double      free_energy;
