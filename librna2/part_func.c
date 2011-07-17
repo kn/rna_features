@@ -244,10 +244,7 @@ PUBLIC void free_pf_arrays(void){
 PUBLIC float boltzmann(const char *sequence, char *structure){
 
   FLT_OR_DBL  Q;
-  double      free_energy;
   int         n = (int) strlen(sequence);
-
-  circular = 0;
 
 #ifdef _OPENMP
   /* always init everything since all global static variables are uninitialized when entering a thread */
@@ -265,32 +262,9 @@ PUBLIC float boltzmann(const char *sequence, char *structure){
   /* do the linear pf fold and fill all matrices  */
   pf_linear(sequence, structure);
 
+  Q = q[iindx[1]-n];
 
-  if (backtrack_type=='C')      Q = qb[iindx[1]-n];
-  else if (backtrack_type=='M') Q = qm[iindx[1]-n];
-  else Q = q[iindx[1]-n];
-
-  /* ensemble free energy in Kcal/mol              */
-  if (Q<=FLT_MIN) fprintf(stderr, "pf_scale too large\n");
-  free_energy = (-log(Q)-n*log(pf_scale))*pf_params->kT/1000.0;
-  /* in case we abort because of floating point errors */
-  if (n>1600) fprintf(stderr, "free energy = %8.2f\n", free_energy);
-
-  /* calculate base pairing probability matrix (bppm)  */
-  if(do_backtrack){
-    pf_create_bppm(sequence, structure);
-    /*
-    *  Backward compatibility:
-    *  This block may be removed if deprecated functions
-    *  relying on the global variable "pr" vanish from within the package!
-    */
-    {
-      if(pr) free(pr);
-      pr = (FLT_OR_DBL *) space(sizeof(FLT_OR_DBL) * ((n+1)*(n+2)/2));
-      memcpy(pr, probs, sizeof(FLT_OR_DBL) * ((n+1)*(n+2)/2));
-    }
-  }
-  return free_energy;
+  return q[iindx[1]-n];
 }
 
 PUBLIC float pf_circ_fold(const char *sequence, char *structure){
@@ -368,7 +342,7 @@ PRIVATE void pf_linear(const char *sequence, char *structure){
     for (i=1; i<=n-d; i++) {
       j=i+d;
       ij = iindx[i]-j;
-      q[ij]=1.0*scale[d+1];
+      q[ij]=1.0; //*scale[d+1];
       qb[ij]=qm[ij]=0.0;
     }
 
@@ -385,7 +359,7 @@ PRIVATE void pf_linear(const char *sequence, char *structure){
         /*hairpin contribution*/
         if (((type==3)||(type==4))&&no_closingGU) qbt1 = 0;
         else
-          qbt1 = exp_E_Hairpin(u, type, S1[i+1], S1[j-1], sequence+i-1, pf_params) * scale[u+2];
+			qbt1 = exp_E_Hairpin(u, type, S1[i+1], S1[j-1], sequence+i-1, pf_params); //* scale[u+2];
         /* interior loops with interior pair k,l */
         for (k=i+1; k<=MIN2(i+MAXLOOP+1,j-TURN-2); k++) {
           u1 = k-i-1;
@@ -393,7 +367,7 @@ PRIVATE void pf_linear(const char *sequence, char *structure){
             type_2 = ptype[iindx[k]-l];
             if (type_2) {
               type_2 = rtype[type_2];
-              qbt1 += qb[iindx[k]-l] * (scale[u1+j-l+1] *
+              qbt1 += qb[iindx[k]-l] * (//scale[u1+j-l+1] *
                                         exp_E_IntLoop(u1, j-l-1, type, type_2,
                                         S1[i+1], S1[j-1], S1[k-1], S1[l+1], pf_params));
             }
@@ -404,7 +378,7 @@ PRIVATE void pf_linear(const char *sequence, char *structure){
         temp = 0.0;
         for (k=i+2; k<=j-1; k++) temp += qm[ii-(k-1)]*qqm1[k];
         tt = rtype[type];
-        qbt1 += temp * expMLclosing * exp_E_MLstem(tt, S1[j-1], S1[i+1], pf_params) * scale[2];
+		qbt1 += temp * expMLclosing * exp_E_MLstem(tt, S1[j-1], S1[i+1], pf_params); //* scale[2];
         qb[ij] = qbt1;
       } /* end if (type!=0) */
       else qb[ij] = 0.0;
@@ -431,10 +405,10 @@ PRIVATE void pf_linear(const char *sequence, char *structure){
       if(type)
         qbt1 *= exp_E_ExtLoop(type, ((i>1) || circular) ? S1[i-1] : -1, ((j<n) || circular) ? S1[j+1] : -1, pf_params);
 
-      qq[i] = qq1[i]*scale[1] + qbt1;
+      qq[i] = qq1[i]  + qbt1; //*scale[1] + qbt1;
 
       /*construction of partition function for segment i,j */
-      temp = 1.0*scale[1+j-i] + qq[i];
+	temp = 1.0 + qq[i]; //*scale[1+j-i] + qq[i];
       for (k=i; k<=j-1; k++) temp += q[ii-k]*qq[k+1];
       q[ij] = temp;
       if (temp>Qmax) {
@@ -732,6 +706,7 @@ PUBLIC void pf_create_bppm(const char *sequence, char *structure){
   return;
 }
 
+
 PRIVATE void scale_pf_params(unsigned int length){
   unsigned int i;
   double  kT;
@@ -741,18 +716,20 @@ PRIVATE void scale_pf_params(unsigned int length){
 
   kT = pf_params->kT;   /* kT in cal/mol  */
 
-   /* scaling factors (to avoid overflows) */
-  if (pf_scale == -1) { /* mean energy for random sequences: 184.3*length cal */
+   /* not using scale factors anymore
+	scaling factors (to avoid overflows)
+  if (pf_scale == -1) { /* mean energy for random sequences: 184.3*length cal
     pf_scale = exp(-(-185+(pf_params->temperature-37.)*7.27)/kT);
     if (pf_scale<1) pf_scale=1;
   }
   scale[0] = 1.;
   scale[1] = 1./pf_scale;
+  */
   expMLbase[0] = 1;
-  expMLbase[1] = pf_params->expMLbase/pf_scale;
+  expMLbase[1] = pf_params->expMLbase;
   for (i=2; i<=length; i++) {
-    scale[i] = scale[i/2]*scale[i-(i/2)];
-    expMLbase[i] = pow(pf_params->expMLbase, (double)i) * scale[i];
+    //scale[i] = scale[i/2]*scale[i-(i/2)];
+	expMLbase[i] = pow(pf_params->expMLbase, (double)i);// * scale[i];
   }
 }
 
