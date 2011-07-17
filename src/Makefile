@@ -87,7 +87,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-ISODATE = 2011-07-01
+ISODATE = 2011-07-17
 LDFLAGS = 
 LIBOBJS = 
 LIBS = 
@@ -150,8 +150,8 @@ target_alias =
 top_builddir = ..
 top_srcdir = ..
 RNAFeatures_SOURCES = RNAFeatures.c cmdline.c cmdline.h
-RNAFeatures_LDADD = ../lib_rna_features/libRNAFeatures.a -L../librna -lRNA -lm ../lib_phylip/libPHYLIP.a
-INCLUDES = -I../lib_rna_features -I../librna -I../lib_phylip
+RNAFeatures_LDADD = ../lib_rna_features/libRNAFeatures.a ../lib_phylip/libPHYLIP.a -L../librna2 -lRNA
+INCLUDES = -I../lib_rna_features -I../librna2 -I../lib_phylip
 all: all-am
 
 .SUFFIXES:

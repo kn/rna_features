@@ -17,6 +17,7 @@
 #include "fold.h"
 #include "fold_vars.h"
 #include "selection.h"
+#include "part_func.h"
 
 #define PRIVATE static
 #define TRUE 1
@@ -120,8 +121,6 @@ int main (int argc, char *argv[]) {
 		printf("%d ", classes[i]);
 	printf("\n");
 	
-	free(seq);
-	free(structure);
 	free(cis);
 	free(trans);
 	free(bps);
@@ -146,6 +145,11 @@ int main (int argc, char *argv[]) {
 	get_avg_sub_rate_for_classes(5, 13, sequences, lclasses,
 								avg1, avg2, avg3);
 	printf("\nParsimony score:\nC1: %f\nC2: %f\nC3: %f\n", *avg1, *avg2, *avg3);
+	
+	printf("\nPartitiona function: %f\n", pf_fold(seq, structure));
+	
+	free(seq);
+	free(structure);
 }
 
 PRIVATE void formatSequence(char *seq) {

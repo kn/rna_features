@@ -150,8 +150,8 @@ target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 RNAFeatures_SOURCES = RNAFeatures.c cmdline.c cmdline.h
-RNAFeatures_LDADD = ../lib_rna_features/libRNAFeatures.a -L../librna -lRNA -lm ../lib_phylip/libPHYLIP.a
-INCLUDES = -I../lib_rna_features -I../librna -I../lib_phylip
+RNAFeatures_LDADD = ../lib_rna_features/libRNAFeatures.a ../lib_phylip/libPHYLIP.a -L../librna2 -lRNA
+INCLUDES = -I../lib_rna_features -I../librna2 -I../lib_phylip
 all: all-am
 
 .SUFFIXES:
