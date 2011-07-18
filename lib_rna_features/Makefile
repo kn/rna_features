@@ -45,7 +45,7 @@ ARFLAGS = cru
 libRNAFeatures_a_AR = $(AR) $(ARFLAGS)
 libRNAFeatures_a_LIBADD =
 am_libRNAFeatures_a_OBJECTS = cotransfold.$(OBJEXT) \
-	selection.$(OBJEXT) lrfutils.$(OBJEXT)
+	selection.$(OBJEXT) lrfutils.$(OBJEXT) boltzmann.$(OBJEXT)
 libRNAFeatures_a_OBJECTS = $(am_libRNAFeatures_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -150,8 +150,8 @@ target_alias =
 top_builddir = ..
 top_srcdir = ..
 noinst_LIBRARIES = libRNAFeatures.a
-libRNAFeatures_a_SOURCES = cotransfold.c cotransfold.h selection.c selection.h lrfutils.c lrfutils.h
-INCLUDES = -I../lib_phylip
+libRNAFeatures_a_SOURCES = cotransfold.c cotransfold.h selection.c selection.h lrfutils.c lrfutils.h boltzmann.c boltzmann.h
+INCLUDES = -I../lib_phylip -I../librna2
 all: all-am
 
 .SUFFIXES:
@@ -199,6 +199,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/boltzmann.Po
 include ./$(DEPDIR)/cotransfold.Po
 include ./$(DEPDIR)/lrfutils.Po
 include ./$(DEPDIR)/selection.Po

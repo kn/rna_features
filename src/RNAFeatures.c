@@ -17,7 +17,7 @@
 #include "fold.h"
 #include "fold_vars.h"
 #include "selection.h"
-#include "part_func.h"
+#include "boltzmann.h"
 
 #define PRIVATE static
 #define TRUE 1
@@ -39,6 +39,7 @@ PRIVATE void version(void);
 int main (int argc, char *argv[]) {
 	int is_plain = TRUE, i = 0, num_char = 0, len = 0;
 	double mfe;
+	float mfe_prob;
 	char *seq = NULL;
 	char *structure = NULL;
 	FILE *seqFile=stdin;
@@ -46,6 +47,11 @@ int main (int argc, char *argv[]) {
 	
 	double *cis = (double*) allocate(sizeof(double), "cis");
 	double *trans =(double*) allocate(sizeof(double), "trans");
+	
+	double *Q, *X, *Y;
+	Q = (double*) allocate(sizeof(double), "Q");
+	X = (double*) allocate(sizeof(double), "X");
+	Y = (double*) allocate(sizeof(double), "Y");
 	
 	bp_info *bps;
 	int *numBps = (int*)allocate(sizeof(int), "numBps");
@@ -110,7 +116,7 @@ int main (int argc, char *argv[]) {
 	
 	classify(*numBps, bps, len, classes);
 	
-	float q = boltzmann(seq, NULL);
+	mfe_prob = boltzmann(seq, NULL, mfe, Q, X, Y);
 
 	// Prints out result to console
 	printf("Length: %d\nBase pairs and closing internal loop:\n", len);
@@ -150,7 +156,7 @@ int main (int argc, char *argv[]) {
 								avg1, avg2, avg3);
 	printf("\nParsimony score:\nC1: %f\nC2: %f\nC3: %f\n", *avg1, *avg2, *avg3);
 	
-	printf("\nQ: %f\n", q);
+	printf("\nEb: %f\nVb: %f\nMFE probability: %f\n", *X / *Q, *Y / *Q - pow(*X / *Q, 2), mfe_prob);
 }
 
 PRIVATE void formatSequence(char *seq) {

@@ -1,4 +1,4 @@
-RNAFeatures.o RNAFeatures.o: RNAFeatures.c /usr/include/stdio.h \
+boltzmann.o boltzmann.o: boltzmann.c ../config.h /usr/include/stdio.h \
   /usr/include/_types.h /usr/include/sys/_types.h \
   /usr/include/sys/cdefs.h /usr/include/machine/_types.h \
   /usr/include/i386/_types.h /usr/include/secure/_stdio.h \
@@ -14,17 +14,21 @@ RNAFeatures.o RNAFeatures.o: RNAFeatures.c /usr/include/stdio.h \
   /usr/include/libkern/i386/_OSByteOrder.h /usr/include/alloca.h \
   /usr/include/machine/types.h /usr/include/i386/types.h \
   /usr/include/i386/_types.h /usr/include/string.h \
-  /usr/include/secure/_string.h cmdline.h ../config.h \
-  ../lib_rna_features/cotransfold.h ../lib_rna_features/lrfutils.h \
-  ../lib_phylip/dnapars.h ../librna2/fold.h ../librna2/data_structures.h \
-  ../librna2/energy_const.h \
+  /usr/include/secure/_string.h /usr/include/math.h \
+  /usr/include/architecture/i386/math.h \
+  /usr/lib/gcc/i686-apple-darwin10/4.2.1/include/float.h \
+  ../librna2/utils.h ../librna2/energy_par.h ../librna2/energy_const.h \
   /usr/lib/gcc/i686-apple-darwin10/4.2.1/include/limits.h \
   /usr/lib/gcc/i686-apple-darwin10/4.2.1/include/syslimits.h \
   /usr/include/limits.h /usr/include/machine/limits.h \
   /usr/include/i386/limits.h /usr/include/i386/_limits.h \
   /usr/include/sys/syslimits.h ../librna2/fold_vars.h \
-  ../lib_rna_features/selection.h ../lib_rna_features/boltzmann.h \
-  ../librna2/data_structures.h
+  ../librna2/data_structures.h ../librna2/pair_mat.h /usr/include/ctype.h \
+  /usr/include/runetype.h ../librna2/params.h ../librna2/loop_energies.h \
+  ../librna2/params.h ../librna2/fold_vars.h ../librna2/energy_par.h \
+  boltzmann.h ../librna2/data_structures.h
+
+../config.h:
 
 /usr/include/stdio.h:
 
@@ -90,19 +94,15 @@ RNAFeatures.o RNAFeatures.o: RNAFeatures.c /usr/include/stdio.h \
 
 /usr/include/secure/_string.h:
 
-cmdline.h:
+/usr/include/math.h:
 
-../config.h:
+/usr/include/architecture/i386/math.h:
 
-../lib_rna_features/cotransfold.h:
+/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/float.h:
 
-../lib_rna_features/lrfutils.h:
+../librna2/utils.h:
 
-../lib_phylip/dnapars.h:
-
-../librna2/fold.h:
-
-../librna2/data_structures.h:
+../librna2/energy_par.h:
 
 ../librna2/energy_const.h:
 
@@ -122,8 +122,24 @@ cmdline.h:
 
 ../librna2/fold_vars.h:
 
-../lib_rna_features/selection.h:
+../librna2/data_structures.h:
 
-../lib_rna_features/boltzmann.h:
+../librna2/pair_mat.h:
+
+/usr/include/ctype.h:
+
+/usr/include/runetype.h:
+
+../librna2/params.h:
+
+../librna2/loop_energies.h:
+
+../librna2/params.h:
+
+../librna2/fold_vars.h:
+
+../librna2/energy_par.h:
+
+boltzmann.h:
 
 ../librna2/data_structures.h:

@@ -48,7 +48,7 @@ libRNA2_a_AR = $(AR) $(ARFLAGS)
 libRNA2_a_LIBADD =
 am_libRNA2_a_OBJECTS = alifold.$(OBJEXT) energy_par.$(OBJEXT) \
 	fold.$(OBJEXT) fold_vars.$(OBJEXT) params.$(OBJEXT) \
-	part_func.$(OBJEXT) ribo.$(OBJEXT) utils.$(OBJEXT)
+	ribo.$(OBJEXT) utils.$(OBJEXT)
 libRNA2_a_OBJECTS = $(am_libRNA2_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -155,10 +155,10 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libRNA2.a
 libRNA2_a_SOURCES = alifold.c energy_par.c fold.c fold_vars.c params.c \
-			part_func.c ribo.c utils.c
+			ribo.c utils.c
 
 noinst_HEADERS = alifold.h data_structures.h energy_const.h energy_par.h fold.h fold_vars.h \
-			loop_energies.h pair_mat.h params.h part_func.h	utils.h \
+			loop_energies.h pair_mat.h params.h utils.h \
 			intl11.h intl11dH.h intl21.h intl21dH.h intl22.h intl22dH.h ribo.h \
 			alicircfold.inc circfold.inc
 
@@ -214,7 +214,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fold.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fold_vars.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/params.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/part_func.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ribo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Po@am__quote@
 
