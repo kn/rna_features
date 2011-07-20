@@ -40,8 +40,14 @@ written by Irmtraud M Meyer and Istvan Miklos.
 (http://mbe.oxfordjournals.org/content/26/1/209.full.pdf)
 written by Naila K. Mimouni, Rune B. Lyngso, Sam Griffiths-Jones and Jotun Hein.
 
+"Moments of the Boltzmann distribution for RNA secondary structures"
+(http://ramet.elte.hu/~miklosi/MiklosMeyerNagy.pdf)
+written by Istvan Miklos, Irmtraud M. Meyer and Borbala Nagy.
+
 3. Usage
 ========
+
+This package includes both a library and executable program to compute above features of RNA sequences.
 
 3.1. Installation
 =================
@@ -59,14 +65,12 @@ Available command line options can be checked by following command:
 
 RNAFeatures -h
 
-You can test coTransFold on one of the example RNA sequences in a directory 
+You can test RNAFeatures on one of the example RNA sequences in a directory 
 called "examples":
 
-（For plain CIS and TRANS) 
-RNAFeatures example/tRNA_seq
+e.g. RNAFeatures example/tRNA_seq
 
-(For free energy CIS and TRANS)
-RNAFeatures -g example/tRNA_seq
+e.g. RNAFeatures -g example/tRNA_seq
 
 3.3. Output
 ===========
@@ -79,6 +83,9 @@ RNAFeatures outputs following:
 - MFE
 - Cis and Trans
 - classes of each bases
+- The expected energy of the RNA secondary structure
+- The variance of the energy of the RNA secondary structure
+- MFE log probability of the RNA sequence
 
 4. Citing RNAFeatures
 =====================
@@ -92,6 +99,10 @@ BMC Molecular Biology. 2004. 5:10
 Naila K. Mimouni, Rune B. Lyngso, Sam Griffiths-Jones and Jotun Hein
 An Analysis of Structural Influences on Selection in RNA Genes
 Mol. Bio. Evo. 2009. 26:209-216
+
+Istvan Miklos, Irmtraud M. Meyer and Borbala Nagy
+Moments of the Boltzmann distribution for RNA secondary structures
+Bull. Math. Biol. 2005. 67:1031-1047
 
 5. Contact
 ==========
