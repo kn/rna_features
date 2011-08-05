@@ -23,9 +23,6 @@
 #include <omp.h>
 #endif
 
-/*@unused@*/
-static char rcsid[] UNUSED = "$Id: part_func.c,v 1.29 2008/02/23 10:10:49 ivo Exp $";
-
 #define ISOLATED  256.0
 
 /*

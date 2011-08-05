@@ -114,7 +114,7 @@ int main (int argc, char *argv[]) {
 	
 	cotransfold(seq, *numBps, bps, cis, trans, is_plain);
 	
-	classify(*numBps, bps, len, classes);
+	classify_base_pairs(*numBps, bps, len, classes);
 	
 	mfe_prob = boltzmann(seq, NULL, mfe, Q, X, Y);
 

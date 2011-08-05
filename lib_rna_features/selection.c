@@ -25,7 +25,7 @@
 
 PUBLIC void get_avg_sub_rate_for_classes(int numSeq, int len, char** seqs, int *classes,
 										double *avg1, double *avg2, double *avg3);
-PUBLIC void classify(int numBps, bp_info* bps, int len, int *classes);
+PUBLIC void classify_base_pairs(int numBps, bp_info* bps, int len, int *classes);
 PRIVATE void separate_sequences_by_class(int numSeq, int len, int* classes, char** seqs,
 										int *len1, char** seqC1, int *len2,
 										char** seqC2, int *len3, char** seqC3);
@@ -34,7 +34,7 @@ PRIVATE int annotate_bp(tuple bp, tuple loop, int stemLen, int class);
 /**
  * Determines the class of bases in give base pairs.
  */
-PUBLIC void classify(int numBps, bp_info* bps, int len, int* classes) {
+PUBLIC void classify_base_pairs(int numBps, bp_info* bps, int len, int* classes) {
 	int i, j, k;
 	tuple outLoop, inLoop;
 	
@@ -84,7 +84,7 @@ PUBLIC void get_avg_sub_rate_for_classes(int numSeq, int len, char** seqs, int *
 	char** seqC2 = (char**)malloc(sizeof(char*) * numSeq);
 	char** seqC3 = (char**)malloc(sizeof(char*) * numSeq);
 	
-	for (i = 0; i < 5; i++) {
+	for (i = 0; i < numSeq; i++) {
 		seqC1[i] = (char*)malloc(sizeof(char) * len);
 		seqC2[i] = (char*)malloc(sizeof(char) * len);
 		seqC3[i] = (char*)malloc(sizeof(char) * len);
@@ -93,9 +93,9 @@ PUBLIC void get_avg_sub_rate_for_classes(int numSeq, int len, char** seqs, int *
 	separate_sequences_by_class(numSeq, len, classes, seqs,
 								len1, seqC1, len2,
 								seqC2, len3, seqC3);
-	(*avg1) = get_min_parsimony_score(5, *len1, seqC1) / (double)(*len1);
-	(*avg2) = get_min_parsimony_score(5, *len2, seqC2) / (double)(*len2);
-	(*avg3) = get_min_parsimony_score(5, *len3, seqC3) / (double)(*len3);
+	(*avg1) = get_min_parsimony_score(numSeq, *len1, seqC1) / (double)(*len1);
+	(*avg2) = get_min_parsimony_score(numSeq, *len2, seqC2) / (double)(*len2);
+	(*avg3) = get_min_parsimony_score(numSeq, *len3, seqC3) / (double)(*len3);
 }
 
 /**
