@@ -89,7 +89,7 @@ PRIVATE double calculate_threeCis_or_threeTrans(int i, int c, int len, double en
 
 PRIVATE double calculate_fiveCis_or_fiveTrans(int i, int c, double energy, int is_plain) {
 	double d = (double) i - c;
-	double l = (double) i;
+	double l = (double) i + 1;
 	return (is_plain ? 1 : abs(energy)) / (d * log(l));
 }
 
@@ -172,10 +172,6 @@ PRIVATE int which_base_pair(char b1, char b2) {
 		if (b2 == 'G' || b2 == 'g')
 			return UG;
 		break;
-	case '_':
-		break;
-	default:
-		fprintf(stderr, "Input error -> the sequence contains invlaid base.\n");
 	}
 	return NO_PAIR;
 }
