@@ -1,8 +1,12 @@
 /*
-		selection.c
-	Author: Katsuya Noguchi
+ 		selection.c
+		
+		Provides functions to compute statistic measures of
+		structural influences on RNA gene selection
+		
+		Author: Katsuya Noguchi
 
-*/
+ */
 
 #include <math.h>
 #include <stdio.h>
@@ -39,7 +43,7 @@ PUBLIC void classify_base_pairs(int numBps, bp_info* bps, int len, int* classes)
 	tuple outLoop, inLoop;
 	
 	for (i = 0; i < len; i++)
-		classes[i] = 0; //NUM_CLASS + 1;
+		classes[i] = 0;
 	
 	i = 0;
 	while (i < numBps) {
@@ -71,9 +75,6 @@ PUBLIC void classify_base_pairs(int numBps, bp_info* bps, int len, int* classes)
 	}
 }
 
-/**
- * Calculates the average substitution rate for each class (I, II and III).
- */
 PUBLIC void get_avg_sub_rate_for_classes(int numSeq, int len, char** seqs, int *classes,
 										double *avg1, double *avg2, double *avg3) {
 	int i = 0;
@@ -89,7 +90,6 @@ PUBLIC void get_avg_sub_rate_for_classes(int numSeq, int len, char** seqs, int *
 		seqC2[i] = (char*)malloc(sizeof(char) * len);
 		seqC3[i] = (char*)malloc(sizeof(char) * len);
 	}
-	
 	separate_sequences_by_class(numSeq, len, classes, seqs,
 								len1, seqC1, len2,
 								seqC2, len3, seqC3);
@@ -120,6 +120,11 @@ PRIVATE void separate_sequences_by_class(int numSeq, int len, int* classes, char
 				seqC3[j][c3] = seqs[j][i];
 			c3++;
 		}
+	}
+	for (j = 0; j < numSeq; j++) {
+		seqC1[j][c1] = '\0';
+		seqC2[j][c2] = '\0';
+		seqC3[j][c3] = '\0';
 	}
 	(*len1) = c1;
 	(*len2) = c2;

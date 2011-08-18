@@ -1,0 +1,55 @@
+example.o example.o: example.c /usr/include/stdio.h /usr/include/_types.h \
+  /usr/include/sys/_types.h /usr/include/sys/cdefs.h \
+  /usr/include/machine/_types.h /usr/include/i386/_types.h \
+  /usr/include/secure/_stdio.h /usr/include/secure/_common.h \
+  /usr/include/string.h /usr/include/secure/_string.h \
+  /usr/local/include/CUnit/Basic.h /usr/local/include/CUnit/CUnit.h \
+  /usr/include/math.h /usr/include/architecture/i386/math.h \
+  /usr/local/include/CUnit/CUError.h /usr/include/errno.h \
+  /usr/include/sys/errno.h /usr/local/include/CUnit/TestDB.h \
+  /usr/include/setjmp.h /usr/include/machine/setjmp.h \
+  /usr/include/i386/setjmp.h /usr/local/include/CUnit/TestRun.h
+
+/usr/include/stdio.h:
+
+/usr/include/_types.h:
+
+/usr/include/sys/_types.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/machine/_types.h:
+
+/usr/include/i386/_types.h:
+
+/usr/include/secure/_stdio.h:
+
+/usr/include/secure/_common.h:
+
+/usr/include/string.h:
+
+/usr/include/secure/_string.h:
+
+/usr/local/include/CUnit/Basic.h:
+
+/usr/local/include/CUnit/CUnit.h:
+
+/usr/include/math.h:
+
+/usr/include/architecture/i386/math.h:
+
+/usr/local/include/CUnit/CUError.h:
+
+/usr/include/errno.h:
+
+/usr/include/sys/errno.h:
+
+/usr/local/include/CUnit/TestDB.h:
+
+/usr/include/setjmp.h:
+
+/usr/include/machine/setjmp.h:
+
+/usr/include/i386/setjmp.h:
+
+/usr/local/include/CUnit/TestRun.h:

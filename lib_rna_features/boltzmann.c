@@ -223,6 +223,12 @@ PUBLIC float boltzmann(const char *sequence, char *structure, double mfe, FLT_OR
 
   int         n = (int) strlen(sequence);
 
+  if (n < 1) {
+	*Q = 1.0;
+	*X = *Y = 0.0;
+	return 1.0;
+  }
+
 #ifdef _OPENMP
   /* always init everything since all global static variables are uninitialized when entering a thread */
   init_partfunc(n);

@@ -1,17 +1,3 @@
-#ifndef __VIENNA_RNA_PACKAGE_PART_FUNC_H__
-#define __VIENNA_RNA_PACKAGE_PART_FUNC_H__
-
-#include "data_structures.h"
-
-#define FLT_OR_DBL double
-
-#ifdef __GNUC__
-#define DEPRECATED(func) func __attribute__ ((deprecated))
-#else
-#define DEPRECATED(func) func
-#endif
-
-
 /**
  *  \file boltzmann.h
  * 
@@ -21,16 +7,22 @@
  *  Partion function folding...
  */
 
+#ifndef BOLTZMANN_H
+#define BOLTZMANN_H
+
+#include "data_structures.h"
+#define FLT_OR_DBL double
+
+#ifdef __GNUC__
+#define DEPRECATED(func) func __attribute__ ((deprecated))
+#else
+#define DEPRECATED(func) func
+#endif
+
 /**
  *  a flag indicating that auxilary arrays are needed throughout the computations which are necessary for stochastic backtracking
  */
 extern  int st_back;
-
-/*
-#################################################
-# PARTITION FUNCTION COMPUTATION                #
-#################################################
-*/
 
 /**
  *  \brief Compute the partition function \f$Q\f$ of an RNA sequence

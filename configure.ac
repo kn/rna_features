@@ -30,4 +30,4 @@ AC_PROG_INSTALL
 
 AC_CONFIG_HEADERS([config.h])
 
-AC_OUTPUT([Makefile lib_phylip/Makefile lib_rna_features/Makefile librna2/Makefile src/Makefile])
+AC_OUTPUT([Makefile lib_phylip/Makefile lib_rna_features/Makefile librna2/Makefile src/Makefile test/Makefile])

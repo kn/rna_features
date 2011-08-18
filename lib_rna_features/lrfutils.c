@@ -1,6 +1,7 @@
 /*
-			utils.c
-	Author: Katsuya Noguchi
+		utils.c
+	
+		Author: Katsuya Noguchi
 	
 */
 
@@ -30,16 +31,19 @@ PUBLIC void *allocate(unsigned int size, char* name) {
 	return pointer;
 }
 
-/**
- * Determine base pairs and types of loops they close,
- * given its parenthesis structure.
- */
 PUBLIC void find_base_pairs(const char* structure, int* numBps, bp_info* bps) {
 	int i, j, c, l;
 	int len = strlen(structure);
 	int size = len/2 + 1;
-	int *stack = (int *)allocate(sizeof(int) * len, "stack");
-	int *numItems = (int *)allocate(sizeof(int) * len, "numItem");
+	int *stack, *numItems;
+	
+	if (len < 1) {
+		*numBps = 0;
+		return;
+	}
+	
+	stack = (int *)allocate(sizeof(int) * len, "stack");
+	numItems = (int *)allocate(sizeof(int) * len, "numItem");
 	tuple t;
 	tuple loops[size][size];
 	

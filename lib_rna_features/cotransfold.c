@@ -1,8 +1,9 @@
 /*
-								cotransfold.c
-							Author: Katsuya Noguchi
+	cotransfold.c
 	
-	Calculates Cis and Trans of a given RNA sequence and its structure.
+	Provides a function to calculates Cis and Trans of a given RNA sequence and its structure.
+	
+	Author: Katsuya Noguchi
 	
 */
 
@@ -29,7 +30,6 @@
 #define UG 6
 
 PUBLIC void cotransfold(char *seq, int numBps, bp_info *bps, double *cis, double *trans, int is_plain);
-
 PRIVATE double calculate_threeCis_or_threeTrans(int i, int c, int len, double energy, int is_plain);
 PRIVATE double calculate_fiveCis_or_fiveTrans(int i, int c, double energy, int is_plain);
 PRIVATE int get_stem_len(double *energy, const char *seq, int len, int b1, int b2, int is_forward);
@@ -44,13 +44,21 @@ PRIVATE double get_gu_stacking_energy(char b1, char b2);
 PRIVATE double get_ua_stacking_energy(char b1, char b2);
 PRIVATE double get_ug_stacking_energy(char b1, char b2);
 
-
 void cotransfold(char *seq, int numBps, bp_info *bps, double *cis, double *trans, int is_plain) {
 	int len = (int) strlen(seq);
 	int p, c;
-	double threeCis = 0, threeTrans = 0, fiveCis = 0, fiveTrans = 0;
-	int *pairs = (int *)malloc(sizeof(int) * len);
-	double *energy = (double *)malloc(sizeof(double));
+	double threeCis, threeTrans, fiveCis, fiveTrans;
+	int *pairs;
+	double *energy;
+	
+	if (len < 1) {
+		*cis = *trans = 0.0;
+		return;
+	}
+	
+	pairs = (int *)malloc(sizeof(int) * len);
+	energy = (double *)malloc(sizeof(double));
+	threeCis = threeTrans = fiveCis = fiveTrans = 0.0;
 
 	for (p = 0; p < numBps; p++) {
 		if (has_at_least_two_adjacent_bp(numBps, bps, p) == TRUE) {
@@ -81,12 +89,18 @@ void cotransfold(char *seq, int numBps, bp_info *bps, double *cis, double *trans
 	*trans = threeTrans - fiveTrans;
 }
 
+/**
+ * Calculates plain or energy weighted 3Cis or 3Trans
+ */
 PRIVATE double calculate_threeCis_or_threeTrans(int i, int c, int len, double energy, int is_plain) {
 	double d = (double) c - i;
 	double l = (double) len - i;
 	return (is_plain ? 1 : abs(energy)) / (d * log(l));
 }
 
+/**
+ * Calculates plain or energy weighted 5Cis or 5Trans
+ */
 PRIVATE double calculate_fiveCis_or_fiveTrans(int i, int c, double energy, int is_plain) {
 	double d = (double) i - c;
 	double l = (double) i + 1;
@@ -94,7 +108,7 @@ PRIVATE double calculate_fiveCis_or_fiveTrans(int i, int c, double energy, int i
 }
 
 /**
- * Returns true if given base pairs have at least two adjacent base pairs; o/w false.
+ * Checks if given base pairs have at least two adjacent base pairs.
  */
 PRIVATE int has_at_least_two_adjacent_bp(int numBps, bp_info *bps, int p) {
 	int count = 0;
@@ -114,7 +128,7 @@ PRIVATE int has_at_least_two_adjacent_bp(int numBps, bp_info *bps, int p) {
 }
 
 /**
- * Returns true if given bases are qualified to be alternative helix; o/w false.
+ * Checks if given bases are qualified to be alternative helix.
  */
 PRIVATE int is_alt_helix(double *energy, const char *seq, int len, int b1, int b2) {
 	int stem_len = 0;
@@ -128,8 +142,7 @@ PRIVATE int is_alt_helix(double *energy, const char *seq, int len, int b1, int b
 }
 
 /**
- * Recursively calculate stem length in specified direction and its stacking energy.
- * Returns the stem length.
+ * Recursively calculates stem length in specified direction and its stacking energy.
  */
 PRIVATE int get_stem_len(double *energy, const char *seq, int len, int b1, int b2, int is_forward) {
 	if (b1 < 0 || b2 >= len || b1 >= b2 || which_base_pair(seq[b1], seq[b2]) == NO_PAIR)
@@ -148,7 +161,7 @@ PRIVATE int get_stem_len(double *energy, const char *seq, int len, int b1, int b
 }
 
 /**
- * Returns a type of base pair of given bases.
+ * Checks a type of base pair of given bases.
  */
 PRIVATE int which_base_pair(char b1, char b2) {
 	switch (b1) {
