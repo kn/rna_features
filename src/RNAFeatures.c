@@ -1,6 +1,7 @@
 /*********************************************************************                
  *                                                                   *
  *                          RNAFeatures.c                            *
+ *				Demo program for RNAFeatures library				 *
  *                                                                   *
  *	                   Author: Katsuya Noguchi                       *
  *                                                                   *
@@ -129,6 +130,7 @@ int main (int argc, char *argv[]) {
 	for (i = 0; i < len; i++)
 		printf("%d ", classes[i]);
 	printf("\n");
+	printf("Eb: %f\nVb: %f\nMFE probability: %f\n", *X / *Q, *Y / *Q - pow(*X / *Q, 2), mfe_prob);
 	
 	free(cis);
 	free(trans);
@@ -137,27 +139,9 @@ int main (int argc, char *argv[]) {
 	free(classes);	
 	free(seq);
 	free(structure);
-	
-	/* Test Parsimony */
-	char** sequences = (char**)malloc(sizeof(char*) * 5);
-	int lclasses[13] = {1, 1, -1, 2, 2, -1, 3, 3, -1, 1, 2, 3, 0};
-	double *avg1 = (double*)malloc(sizeof(double));
-	double *avg2 = (double*)malloc(sizeof(double));
-	double *avg3 = (double*)malloc(sizeof(double));
-	
-	for (i = 0; i < 5; i++)
-		sequences[i] = (char*)malloc(sizeof(char) * 13);
-	strcpy(sequences[0], "AACGUGGCCAAAU");
-	strcpy(sequences[1], "AAGGUCGCCAAAC");
-	strcpy(sequences[2], "CAUUUCGUCACAA");
-	strcpy(sequences[3], "GGUAUUUCGGCCU");
-	strcpy(sequences[4], "GGGAUCUCGGCCC");
-	
-	get_avg_sub_rate_for_classes(5, 13, sequences, lclasses,
-								avg1, avg2, avg3);
-	printf("\nParsimony score:\nC1: %f\nC2: %f\nC3: %f\n", *avg1, *avg2, *avg3);
-	
-	printf("\nEb: %f\nVb: %f\nMFE probability: %f\n", *X / *Q, *Y / *Q - pow(*X / *Q, 2), mfe_prob);
+	free(X);
+	free(Q);
+	free(Y);
 }
 
 PRIVATE void formatSequence(char *seq) {
