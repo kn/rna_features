@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "cmdline.h"
 #include "config.h"
@@ -116,7 +117,7 @@ int main (int argc, char *argv[]) {
 	
 	classify_base_pairs(*numBps, bps, len, classes);
 	
-	mfe_prob = boltzmann(seq, NULL, mfe, Q, X, Y);
+	mfe_prob = boltzmann(seq, mfe, Q, X, Y);
 
 	// Prints out result to console
 	printf("Length: %d\nBase pairs and closing internal loop:\n", len);

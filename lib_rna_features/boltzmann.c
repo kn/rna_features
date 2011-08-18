@@ -1,8 +1,8 @@
 /*
-							boltzmann.c
- Caslculates expected energy and variance of boltzmann distribution
+		boltzmann.c
+		Caslculates expected energy and variance of boltzmann distribution
 
-                  			Katsuya Noguchi
+        Author: Katsuya Noguchi
 */
 
 #include <config.h>
@@ -75,8 +75,8 @@ PRIVATE short       *S, *S1;
 PRIVATE void  init_partfunc(int length);
 PRIVATE void  scale_pf_params(unsigned int length);
 PRIVATE void  get_arrays(unsigned int length);
-PRIVATE void  make_ptypes(const short *S, const char *structure);
-PRIVATE void  pf_linear(const char *sequence, char *structure);
+PRIVATE void  make_ptypes(const short *S);
+PRIVATE void  pf_linear(const char *sequence);
 PRIVATE void  pf_create_bppm(const char *sequence, char *structure);
 PRIVATE void  backtrack(int i, int j);
 PRIVATE void  backtrack_qm(int i, int j);
@@ -219,7 +219,7 @@ PUBLIC void free_pf_arrays(void){
 }
 
 /*-----------------------------------------------------------------*/
-PUBLIC float boltzmann(const char *sequence, char *structure, double mfe, FLT_OR_DBL *Q, FLT_OR_DBL *X, FLT_OR_DBL *Y){
+PUBLIC float boltzmann(const char *sequence, double mfe, FLT_OR_DBL *Q, FLT_OR_DBL *X, FLT_OR_DBL *Y){
 
   int         n = (int) strlen(sequence);
 
@@ -239,10 +239,10 @@ PUBLIC float boltzmann(const char *sequence, char *structure, double mfe, FLT_OR
   S   = encode_sequence(sequence, 0);
   S1  = encode_sequence(sequence, 1);
 
-  make_ptypes(S, structure);
+  make_ptypes(S);
 
   /* do the linear pf fold and fill all matrices  */
-  pf_linear(sequence, structure);
+  pf_linear(sequence);
 
   *Q = q[iindx[1]-n];
   *X = x[iindx[1]-n];
@@ -251,7 +251,7 @@ PUBLIC float boltzmann(const char *sequence, char *structure, double mfe, FLT_OR
   return log10(exp(-mfe * 1000 / pf_params->kT) / *Q);
 }
 
-PRIVATE void pf_linear(const char *sequence, char *structure){
+PRIVATE void pf_linear(const char *sequence){
 
   int n, i,j,k,l, ij, u,u1,d,ii, type, type_2, tt;
   FLT_OR_DBL temp, tempx, tempy, Qmax=0;
@@ -446,25 +446,15 @@ PRIVATE void scale_pf_params(unsigned int length){
 
   kT = pf_params->kT;   /* kT in cal/mol  */
 
-   /* not using scale factors anymore
-	scaling factors (to avoid overflows)
-  if (pf_scale == -1) { /* mean energy for random sequences: 184.3*length cal
-    pf_scale = exp(-(-185+(pf_params->temperature-37.)*7.27)/kT);
-    if (pf_scale<1) pf_scale=1;
-  }
-  scale[0] = 1.;
-  scale[1] = 1./pf_scale;
-  */
   expMLbase[0] = 1;
   expMLbase[1] = pf_params->expMLbase;
   for (i=2; i<=length; i++) {
-    //scale[i] = scale[i/2]*scale[i-(i/2)];
-	expMLbase[i] = pow(pf_params->expMLbase, (double)i);// * scale[i];
+	expMLbase[i] = pow(pf_params->expMLbase, (double)i);
   }
 }
 
 /*---------------------------------------------------------------------------*/
-PRIVATE void make_ptypes(const short *S, const char *structure){
+PRIVATE void make_ptypes(const short *S){
   int n,i,j,k,l;
 
   n=S[0];
@@ -484,257 +474,4 @@ PRIVATE void make_ptypes(const short *S, const char *structure){
         i--; j++;
       }
     }
-
-  if (fold_constrained && (structure != NULL))
-    constrain_ptypes(structure, (unsigned int)n, ptype, NULL, TURN, 1);
-}
-
-/*
-  stochastic backtracking in pf_fold arrays
-  returns random structure S with Boltzman probabilty
-  p(S) = exp(-E(S)/kT)/Z
-*/
-char *pbacktrack(char *seq){
-  double r, qt;
-  int i,j,n, start;
-  sequence = seq;
-  n = strlen(sequence);
-
-  if (init_length<1)
-    nrerror("can't backtrack without pf arrays.\n"
-            "Call pf_fold() before pbacktrack()");
-  pstruc = space((n+1)*sizeof(char));
-
-  for (i=0; i<n; i++) pstruc[i] = '.';
-
-  start = 1;
-  while (start<n) {
-  /* find i position of first pair */
-    for (i=start; i<n; i++) {
-      r = urn() * qln[i];
-      if (r > qln[i+1]*scale[1])  break; /* i is paired */
-    }
-    if (i>=n) break; /* no more pairs */
-    /* now find the pairing partner j */
-    r = urn() * (qln[i] - qln[i+1]*scale[1]);
-    for (qt=0, j=i+1; j<=n; j++) {
-      int type;
-      type = ptype[iindx[i]-j];
-      if (type) {
-        double qkl;
-        qkl = qb[iindx[i]-j];
-        if (j<n) qkl *= qln[j+1];
-        qkl *=  exp_E_ExtLoop(type, (i>1) ? S1[i-1] : -1, (j<n) ? S1[j+1] : -1, pf_params);
-        qt += qkl;
-        if (qt > r) break; /* j is paired */
-      }
-    }
-    if (j==n+1) nrerror("backtracking failed in ext loop");
-    start = j+1;
-    backtrack(i,j);
-  }
-
-  return pstruc;
-}
-char *pbacktrack_circ(char *seq){
-  double r, qt;
-  int i, j, k, l, n;
-  FLT_OR_DBL  expMLclosing      = pf_params->expMLclosing;
-
-  sequence = seq;
-  n = strlen(sequence);
-
-  if (init_length<1)
-    nrerror("can't backtrack without pf arrays.\n"
-      "Call pf_circ_fold() before pbacktrack_circ()");
-  pstruc = space((n+1)*sizeof(char));
-
-  /* initialize pstruct with single bases  */
-  for (i=0; i<n; i++) pstruc[i] = '.';
-
-  qt = 1.0*scale[n];
-  r = urn() * qo;
-
-  /* open chain? */
-  if(qt > r) return pstruc;
-
-  for(i=1; (i < n); i++){
-    for(j=i+TURN+1;(j<=n); j++){
-
-      int type, u;
-      /* 1. first check, wether we can do a hairpin loop  */
-      u = n-j + i-1;
-      if (u<TURN) continue;
-
-      type = ptype[iindx[i]-j];
-      if (!type) continue;
-
-      type=rtype[type];
-
-      char loopseq[10];
-      if (u<7){
-        strcpy(loopseq , sequence+j-1);
-        strncat(loopseq, sequence, i);
-      }
-
-      qt += qb[iindx[i]-j] * exp_E_Hairpin(u, type, S1[j+1], S1[i-1],  loopseq, pf_params) * scale[u];
-      /* found a hairpin? so backtrack in the enclosed part and we're done  */
-      if(qt>r){ backtrack(i,j); return pstruc;}
-
-      /* 2. search for (k,l) with which we can close an interior loop  */
-      for(k=j+1; (k < n); k++){
-        int ln1, lstart;
-        ln1 = k - j - 1;
-        if(ln1+i-1>MAXLOOP) break;
-
-        lstart = ln1+i-1+n-MAXLOOP;
-        if(lstart<k+TURN+1) lstart = k + TURN + 1;
-        for(l=lstart; (l <= n); l++){
-            int ln2, type2;
-            ln2 = (i - 1) + (n - l);
-            if((ln1+ln2) > MAXLOOP) continue;
-
-            type2 = ptype[iindx[k]-l];
-            if(!type) continue;
-            type2 = rtype[type2];
-            qt += qb[iindx[i]-j] * qb[iindx[k]-l] * exp_E_IntLoop(ln2, ln1, type2, type, S1[l+1], S1[k-1], S1[i-1], S1[j+1], pf_params) * scale[ln1 + ln2];
-            /* found an exterior interior loop? also this time, we can go straight  */
-            /* forward and backtracking the both enclosed parts and we're done      */
-            if(qt>r){ backtrack(i,j); backtrack(k,l); return pstruc;}
-        }
-      } /* end of kl double loop */
-    }
-  } /* end of ij double loop  */
-  {
-    /* as we reach this part, we have to search for our barrier between qm and qm2  */
-    qt = 0.;
-    r = urn()*qmo;
-    for(k=TURN+2; k<n-2*TURN-3; k++){
-      qt += qm[iindx[1]-k] * qm2[k+1] * expMLclosing;
-      /* backtrack in qm and qm2 if we've found a valid barrier k  */
-      if(qt>r){ backtrack_qm(1,k); backtrack_qm2(k+1,n); return pstruc;}
-    }
-  }
-  /* if we reach the actual end of this function, an error has occured  */
-  /* cause we HAVE TO find an exterior loop or an open chain!!!         */
-  nrerror("backtracking failed in exterior loop");
-  return pstruc;
-}
-
-PRIVATE void backtrack_qm(int i, int j){
-  /* divide multiloop into qm and qm1  */
-  double qmt, r;
-  int k;
-  while(j>i){
-    /* now backtrack  [i ... j] in qm[] */
-    r = urn() * qm[iindx[i] - j];
-    qmt = qm1[jindx[j]+i]; k=i;
-    if(qmt<r)
-      for(k=i+1; k<=j; k++){
-        qmt += (qm[iindx[i]-(k-1)]+expMLbase[k-i])*qm1[jindx[j]+k];
-        if(qmt >= r) break;
-      }
-    if(k>j) nrerror("backtrack failed in qm");
-
-    backtrack_qm1(k,j);
-
-    if(k<i+TURN) break; /* no more pairs */
-    r = urn() * (qm[iindx[i]-(k-1)] + expMLbase[k-i]);
-    if(expMLbase[k-i] >= r) break; /* no more pairs */
-    j = k-1;
-  }
-}
-
-PRIVATE void backtrack_qm1(int i,int j){
-  /* i is paired to l, i<l<j; backtrack in qm1 to find l */
-  int ii, l, type;
-  double qt, r;
-  r = urn() * qm1[jindx[j]+i];
-  ii = iindx[i];
-  for (qt=0., l=i+TURN+1; l<=j; l++) {
-    type = ptype[ii-l];
-    if (type)
-      qt +=  qb[ii-l] * exp_E_MLstem(type, S1[i-1], S1[l+1], pf_params) * expMLbase[j-l];
-    if (qt>=r) break;
-  }
-  if (l>j) nrerror("backtrack failed in qm1");
-  backtrack(i,l);
-}
-
-PRIVATE void backtrack_qm2(int k, int n){
-  double qom2t, r;
-  int u;
-  r= urn()*qm2[k];
-  /* we have to search for our barrier u between qm1 and qm1  */
-  for (qom2t = 0.,u=k+TURN+1; u<n-TURN-1; u++){
-    qom2t += qm1[jindx[u]+k]*qm1[jindx[n]+(u+1)];
-    if(qom2t > r) break;
-  }
-  if(u==n-TURN) nrerror("backtrack failed in qm2");
-  backtrack_qm1(k,u);
-  backtrack_qm1(u+1,n);
-}
-
-PRIVATE void backtrack(int i, int j){
-  do {
-    double r, qbt1;
-    int k, l, type, u, u1;
-
-    pstruc[i-1] = '('; pstruc[j-1] = ')';
-
-    r = urn() * qb[iindx[i]-j];
-    type = ptype[iindx[i]-j];
-    u = j-i-1;
-    /*hairpin contribution*/
-    if (((type==3)||(type==4))&&no_closingGU) qbt1 = 0;
-    else
-      qbt1 = exp_E_Hairpin(u, type, S1[i+1], S1[j-1], sequence+i-1, pf_params)*
-        scale[u+2]; /* add scale[u+2] */
-
-    if (qbt1>=r) return; /* found the hairpin we're done */
-
-    for (k=i+1; k<=MIN2(i+MAXLOOP+1,j-TURN-2); k++) {
-      u1 = k-i-1;
-      for (l=MAX2(k+TURN+1,j-1-MAXLOOP+u1); l<j; l++) {
-        int type_2;
-        type_2 = ptype[iindx[k]-l];
-        if (type_2) {
-          type_2 = rtype[type_2];
-          /* add *scale[u1+u2+2] */
-          qbt1 += qb[iindx[k]-l] * (scale[u1+j-l+1] *
-            exp_E_IntLoop(u1, j-l-1, type, type_2,
-                          S1[i+1], S1[j-1], S1[k-1], S1[l+1], pf_params));
-        }
-        if (qbt1 > r) break;
-      }
-      if (qbt1 > r) break;
-    }
-    if (l<j) {
-      i=k; j=l;
-    }
-    else break;
-  } while (1);
-
-  /* backtrack in multi-loop */
-  {
-    double r, qt;
-    int k, ii, jj;
-
-    i++; j--;
-    /* find the first split index */
-    ii = iindx[i]; /* ii-j=[i,j] */
-    jj = jindx[j]; /* jj+i=[j,i] */
-    for (qt=0., k=i+1; k<j; k++) qt += qm[ii-(k-1)]*qm1[jj+k];
-    r = urn() * qt;
-    for (qt=0., k=i+1; k<j; k++) {
-      qt += qm[ii-(k-1)]*qm1[jj+k];
-      if (qt>=r) break;
-    }
-    if (k>=j) nrerror("backtrack failed, can't find split index ");
-
-    backtrack_qm1(k, j);
-
-    j = k-1;
-    backtrack_qm(i,j);
-  }
 }

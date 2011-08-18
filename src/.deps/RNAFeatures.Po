@@ -14,7 +14,8 @@ RNAFeatures.o RNAFeatures.o: RNAFeatures.c /usr/include/stdio.h \
   /usr/include/libkern/i386/_OSByteOrder.h /usr/include/alloca.h \
   /usr/include/machine/types.h /usr/include/i386/types.h \
   /usr/include/i386/_types.h /usr/include/string.h \
-  /usr/include/secure/_string.h cmdline.h ../config.h \
+  /usr/include/secure/_string.h /usr/include/math.h \
+  /usr/include/architecture/i386/math.h cmdline.h ../config.h \
   ../lib_rna_features/cotransfold.h ../lib_rna_features/lrfutils.h \
   ../lib_phylip/dnapars.h ../librna2/fold.h ../librna2/data_structures.h \
   ../librna2/energy_const.h \
@@ -89,6 +90,10 @@ RNAFeatures.o RNAFeatures.o: RNAFeatures.c /usr/include/stdio.h \
 /usr/include/string.h:
 
 /usr/include/secure/_string.h:
+
+/usr/include/math.h:
+
+/usr/include/architecture/i386/math.h:
 
 cmdline.h:
 
